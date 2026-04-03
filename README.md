@@ -16,6 +16,8 @@ MedFlow AI simulates a weight-management clinic's intake workflow:
 4. **Doctor chats with an AI assistant** — streaming, context-aware responses grounded in the patient record
 5. **Consultation is marked complete** — a background job asynchronously generates a follow-up message
 
+<img width="723" height="543" alt="image" src="https://github.com/user-attachments/assets/fbb5f64a-0f14-473e-a796-c4dc41fcdda5" />
+
 ```mermaid
 flowchart LR
     Browser(["Browser\nPatient / Doctor"])
