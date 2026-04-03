@@ -1,0 +1,25 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# build outputs
+.next
+dist
+build
+.turbo
+
+# env
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode
+.idea
+
+# prisma generated migrations (keep schema, ignore migration history for PoC)
+# apps/api/prisma/migrations

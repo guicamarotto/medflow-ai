@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id           String         @id @default(cuid())
+  name         String
+  email        String         @unique
+  intakeData   Json
+  aiSummary    String?
+  urgencyScore Int?
+  flags        String[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  consultations Consultation[]
+  followUps     FollowUp[]
+}
+
+model Consultation {
+  id          String    @id @default(cuid())
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  notes       String?
+  status      String    @default("scheduled") // scheduled | completed | cancelled
+  scheduledAt DateTime
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model FollowUp {
+  id        String    @id @default(cuid())
+  patientId String
+  patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  message   String
+  channel   String    @default("email") // email | sms
+  status    String    @default("pending") // pending | sent | failed
+  sentAt    DateTime?
+  createdAt DateTime  @default(now())
+}
