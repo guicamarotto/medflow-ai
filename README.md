@@ -17,6 +17,37 @@ MedFlow AI simulates a weight-management clinic's intake workflow:
 5. **Consultation is marked complete** — a background job asynchronously generates a follow-up message
 
 ```mermaid
+flowchart LR
+    Browser(["Browser\nPatient / Doctor"])
+
+    subgraph Web ["Next.js :3000"]
+        Pages["Pages\nSSR + Client"]
+        ChatRoute["API Route\n/api/chat/:id"]
+    end
+
+    subgraph API ["Fastify API :3001"]
+        Routes["Routes\n/intake · /patients · /consultations"]
+        Worker["Follow-up Worker\nBullMQ"]
+    end
+
+    LLM(["LLM API\nGroq · Anthropic · OpenAI · Ollama"])
+    DB[("PostgreSQL")]
+    Queue[("Redis / BullMQ")]
+
+    Browser -->|"form / nav"| Pages
+    Pages -->|"REST"| Routes
+    Pages -->|"useChat POST"| ChatRoute
+    ChatRoute -->|"fetch context"| Routes
+    ChatRoute -->|"streamText SSE"| LLM
+    Routes -->|"complete()"| LLM
+    Routes -->|"read / write"| DB
+    Routes -->|"enqueue job"| Queue
+    Queue -->|"dequeue"| Worker
+    Worker -->|"complete()"| LLM
+    Worker -->|"write"| DB
+```
+
+```mermaid
 sequenceDiagram
     autonumber
 
